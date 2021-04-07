@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="UTF-8">
+	<title>Parser | Compiladores UMG</title>
+	<link rel="icon" href="img/logo.png">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/styles.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
+	<script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="js/functions.js"></script>
+	<script src="js/grammar.js"></script>
+</head>
+
+<body onload="load()" style="background: #fafafa">
+	<header class="mdc-top-app-bar blue-bar" style="background: #066a9c; box-shadow: 0px 2px 5px #888888">
+		<div class="mdc-top-app-bar__row">
+			<section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+				<a href="https://umg.edu.gt/">
+					<img src="img/logo.png" alt="Logo UMG, fondo transparente" width="50px">
+				</a>
+				<span class="mdc-top-app-bar__title">Grethel Caal</span>
+			</section>
+			<section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
+				<!-- <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button> -->
+				<a href="resources/" download="ejGramatica.txt">
+					<button type="button"
+						class="mdc-icon-button material-icons mdc-top-app-bar__action-item mdc-ripple-upgraded--unbounded mdc-ripple-upgraded"
+						aria-label="Download"
+						style="--mdc-ripple-fg-size:28px; --mdc-ripple-fg-scale:1.7142857142857142; --mdc-ripple-left:10px; --mdc-ripple-top:10px;"
+						data-toggle="tooltip" data-placement="bottom"
+						title="Descargar gram&aacute;tica de ejemplo">file_download</button>
+				</a>
+				<!-- <button class="mdc-icon-button material-icons mdc-top-app-bar__action-item mdc-ripple-upgraded--unbounded mdc-ripple-upgraded" aria-label="Print this page" style="--mdc-ripple-fg-size:28px; --mdc-ripple-fg-scale:1.7142857142857142; --mdc-ripple-left:10px; --mdc-ripple-top:10px;">print</button>
+					<button class="mdc-icon-button material-icons mdc-top-app-bar__action-item mdc-ripple-upgraded--unbounded mdc-ripple-upgraded" aria-label="Bookmark this page" style="--mdc-ripple-fg-size:28px; --mdc-ripple-fg-scale:1.7142857142857142; --mdc-ripple-left:10px; --mdc-ripple-top:10px;">bookmark</button> -->
+			</section>
+		</div>
+	</header>
+	<div class="container">
+		<div class="container-fluid">
+			<div class="row" id="fila1">
+				<div id="cont1" class="col-sm-6">
+					<div class="row">
+						<h4 align="center">Archivo .TXT</h4>
+						<p></p>
+						<!-- style="margin-left: -85px" -->
+						<input type="file" id="fileForUpload" accept='text/plain' onchange="processFile()">
+						<p></p>
+						<textarea name="txt" class="form-control" id="fileContents" rows="6" cols="10"
+							hint='Representacion de la quintupla AFN.' readonly></textarea>
+						<p></p>
+						<div class="mt-3">
+							<button class="mdc-button mdc-button--raised" onclick="rst()" id="clearbtn">
+								<span class="mdc-button__ripple"></span>
+								RESET
+							</button>
+							<button class="mdc-button mdc-button--raised" onclick="run()" id="runbtn" disabled>
+								<span class="mdc-button__ripple"></span>
+								START
+							</button>
+						</div>
+					</div>
+					<div class="row mt-4">
+						<h4 align="center">Gram&aacute;tica sin Recursividad</h4>
+						<textarea name="txt" class="form-control" id="sinRContent" rows="6" cols="10" readonly></textarea>
+					</div>
+				</div>
+				<div id="cont2" align="center" class="col-sm-3">
+					<h4>Vectores</h4>
+					<span class="box" id="variables">
+						<h2>V</h2>
+					</span>
+					<span class="box2" id="terminales">
+						<h2>T</h2>
+					</span>
+				</div>
+				<div id="cont3" align="center" class="col-sm-3">
+					<h4>Producciones</h4>
+					<table id="varProd" class="mdc-data-table__table content-table" align="center">
+						<thead>
+							<tr class="mdc-data-table__header-row">
+								<th class="">V</th>
+								<th class="">P</th>
+							</tr>
+						</thead>
+						<tbody id="producciones">
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- <div class="row" id="fila2">
+				<div class="col-sm-6" id="cont4" align="center">
+					<h4>Función Primero</h4>
+					<table id="primero" class="mdc-data-table__table content-table" align="center">
+						<thead align="center">
+							<tr class="mdc-data-table__header-row">
+								<th class="">FUNCI&Oacute;N</th>
+								<th class="">COMPOSICI&Oacute;N</th>
+							</tr>
+						</thead>
+						<tbody id="funPrimero" align="center">
+						</tbody>
+					</table>
+				</div>
+				<div class="col-sm-6" id="cont5" align="center">
+					<h4>Función Siguiente</h4>
+					<table id="siguiente" class="mdc-data-table__table content-table" align="center">
+						<thead align="center">
+							<tr class="mdc-data-table__header-row">
+								<th class="">FUNCI&Oacute;N</th>
+								<th class="">COMPOSICI&Oacute;N</th>
+							</tr>
+						</thead>
+						<tbody id="funSiguiente" align="center">							
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="row" id="fila3">
+				<div class="col-sm-12" id="cont6">
+					<h4>Tabla de S&iacute;mbolos</h4>
+					<table id="simbolos" class="mdc-data-table__table symbol-table" align="center">
+						<thead id="symHeader" align="center">
+						</thead>
+						<tbody id="symTable" align="center">
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="row" id="fila4">
+				<div class="col-sm-4" id="cont7">
+					<h4>Cadena</h4>
+					<div class="input-group mb-3">
+						<input type="text" class="form-control" aria-label="Cadena" placeholder="Ingresar cadena"
+							id="cadena">
+						<div class="input-group-append">
+							<span class="input-group-text">$</span>
+							<button class="btn btn-outline-primary" type="button" onclick="valCadena()">RUN</button>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-8" id="cont8">
+					<h4>Bit&aacute;cora</h4>
+					<table id="bitacora" class="mdc-data-table__table scroll" align="center">
+						<thead id="logHeader"></thead>
+						<tbody id="logTable" align="center">
+						</tbody>
+					</table>
+				</div>
+			</div> -->
+		</div>
+	</div>
+	<div id="snackbar">El archivo se carg&oacute; exitosamente...
+		<button class="btn" id="close" onclick="close()"><i class="fa fa-close"></i></button>
+	</div>
+	<!-- 
+	<div class="mdc-snackbar">
+		<div class="mdc-snackbar__surface">
+			<div class="mdc-snackbar__label" role="status" aria-live="polite">
+				Can't send photo. Retry in 5 seconds.
+			</div>
+			<div class="mdc-snackbar__actions">
+				<button type="button" class="mdc-button mdc-snackbar__action">
+					<div class="mdc-button__ripple"></div>
+					<span class="mdc-button__label">Retry</span>
+				</button>
+			</div>
+		</div>
+	</div> -->
+
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+		crossorigin="anonymous"></script>
+	<script src="js/functions.js"></script>
+	<script src="js/grammar.js"></script>
+</body>
+
+</html>
