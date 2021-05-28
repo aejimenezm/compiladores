@@ -1,5 +1,5 @@
-E: T E1
-E1: 'o' T E1 | e
-T: F T1
-T1: 'a' F T1| e
-F: 'n' F |'('E')' | 't' | 'f'
+E= T E1
+E1= 'o' T E1 | e
+T= F T1
+T1= 'a' F T1| e
+F= 'n' F |'('E')' | 't' | 'f'
